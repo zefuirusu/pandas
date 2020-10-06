@@ -556,6 +556,30 @@ class DataFrame(NDFrame):
         NDFrame.__init__(self, mgr)
 
     # ----------------------------------------------------------------------
+    def filter(self,regitem=r'.*',label=r'',match=False):
+        '''
+        Filter the specific column of the table with regular expression.
+        '''
+        import re
+        reg=re.compile(str(regitem)) # regex search string item.
+        ftli=[]
+        for i in list(self[label].drop_duplicates()):
+            if match==False:
+                b=re.search(reg,str(i))
+            else:
+                b=re.match(reg,str(i))
+            if b != None:
+                ftli.append(b)
+            else:
+                pass
+        tableli=[] #table list
+        for j in ftli:
+            filterTable_fake=self[self[label]==j]
+            tableli.append(filterTable_fake)
+        resuTable=pandas.concat(tableli,join='outer',axis=0)
+        return resuTable
+    
+    # ----------------------------------------------------------------------
 
     @property
     def axes(self) -> List[Index]:
