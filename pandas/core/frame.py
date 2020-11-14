@@ -556,6 +556,32 @@ class DataFrame(NDFrame):
         NDFrame.__init__(self, mgr)
 
     # ----------------------------------------------------------------------
+#sk customized
+    def filter(self,regitem,label=r'',match=False):
+        '''
+        Filter the specific column of the table by regular expression.
+        '''
+        reg=re.compile(regitem)
+        fli=[]
+        for i in list(self[label].drop_duplicates()):
+            if match==False:
+                b=re.search(reg,str(i))
+            else:
+                b=re.match(reg,str(i))
+            if b != None:
+#                 print(b,i)
+                fli.append(i)
+            else:
+                pass
+#         print(fli)
+        ftable=pandas.DataFrame([])
+        for j in fli:
+            ftable_fake=self[self[label]==j]
+#             print(ftable_fake)
+            ftable=pandas.concat([ftable,ftable_fake],join='outer',axis=0)
+        return ftable
+#
+    # ----------------------------------------------------------------------
     def filter(self,regitem=r'.*',label=r'',match=False):
         '''
         Filter the specific column of the table with regular expression.
